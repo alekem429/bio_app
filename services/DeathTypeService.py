@@ -1,5 +1,4 @@
 from .db_context import db, Genes, Deaths, DeathGenes, Factors, DeathFactors, DeathTypes
-import dto_models
 
 
 def get_death_types():
