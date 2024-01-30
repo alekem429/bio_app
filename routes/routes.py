@@ -13,44 +13,132 @@ def hello_word():
 
 @main.route("/get_list_of_death_types", methods=['GET'])
 def get_death_types():
-    return "hello_word"
-
-
-@main.route("/get_death_for_death_type_id", methods=['GET'])
-def get_deaths():
-    id_death_type = int(request.args.get('id_death_type'))
-    res: List[ds.Deaths] = ds.get_deaths_for_death_type_id(id_death_type)
+    res: List[ds.DeathTypes] = ds.get_death_types()
     return [
         {
             "id": r.id,
-            "description": r.description,
-            "death_type": {
-                "id": r.death_type_id
-            }
+            "name": r.Name,
         }
         for r in res
     ]
 
+@main.route("/get_death_for_death_type_id", methods=['GET'])
+def get_deaths():
+    id_death_type = int(request.args.get('id_death_type'))
+    dt = ds.get_death_types()
+    deaths: List[ds.Deaths] = ds.get_deaths_for_death_type_id(id_death_type)
 
-@main.route("/add_death_type")
-def add_death_type(death_type: dict):
-    return "hello_word"
+    res = []
+
+    for d in deaths:
+        genes = ds.get_genes_for_death_id(d.id)
+        factors = ds.get_factors_for_death_id(d.id)
+
+        buf = {"id": d.id,
+               "description": d.description,
+               "death_type": {
+                   "id": d.death_type_id,
+                   "name": dt[[i for i, e in enumerate(dt) if e.id == d.death_type_id][0]].Name
+               },
+               "genes": [{
+                   "id": g.id,
+                   "name": g.name,
+                   "activation": g.activation
+
+               }for g in genes],
+
+               "factors": [
+                   {
+                       "id": f.id,
+                       "name": f.name,
+                       "activation": f.activation
+                   }
+                   for f in factors]
+               }
+        res.append(buf)
+
+    return res
+
+
+@main.route("/get_list_of_genes", methods=['GET'])
+def get_genes():
+    genes: List[ds.Genes] = ds.get_genes()
+    return [
+        {
+            "id": g.id,
+            "name": g.Name,
+        }
+        for g in genes
+    ]
+
+@main.route("/get_list_of_factors", methods=['GET'])
+def get_factors():
+    factors: List[ds.Factors] = ds.get_factors()
+    return [
+        {
+            "id": f.id,
+            "name": f.Name,
+        }
+        for f in factors
+    ]
+
+
+
+
+
+
+@main.route("/add_death_type", methods=['Post'])
+def add_death_type():
+    data = request.json
+    dt = ds.add_death_type(data.get('name'))
+    return {
+            "id": dt.id,
+            "name": dt.Name,
+        }
+
+
+@main.route("/add_death", methods=['Post'])
+def add_death():
+    data = request.json
+    dt = ds.add_death(data)
+    return {
+            "id": dt.id,
+            "death_type_id": dt.death_type_id,
+            "description": dt.description
+        }
+
+@main.route("/add_gene", methods=['Post'])
+def add_gene():
+    data = request.json
+    dt = ds.add_gene(data)
+    return {
+            "id": dt.id,
+            "name": dt.name
+        }
+
+@main.route("/add_factor", methods=['Post'])
+def add_factor():
+    data = request.json
+    dt = ds.add_factor(data)
+    return {
+            "id": dt.id,
+            "name": dt.name
+        }
+
+
+@main.route("/update_death", methods=['Put'])
+def update_death():
+    data = request.json
+    dt = ds.update_death(data)
+    return {
+        "id": dt.id,
+        "name": dt.name
+    }
 
 
 @main.route("/remove_death_type")
 def remove_death_type(death_type_id: int):
     return "hello_word"
-
-
-@main.route("/add_death")
-def add_death(death: dict):
-    return "hello_word"
-
-
-@main.route("/update_death")
-def update_death(death: dict):
-    return "hello_word"
-
 
 @main.route("/remove_death")
 def remove_death(death: dict):
