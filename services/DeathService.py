@@ -46,8 +46,8 @@ def add_death_type(name: str):
     return _death_type
 
 
-def add_gene(name: str):
-    _gene = Genes(name=name)
+def add_gene(gene: dict):
+    _gene = Genes(name=gene['name'])
     db.session.add(_gene)
     db.session.commit()
     return _gene
@@ -77,20 +77,72 @@ def add_death(death: dict):
 def update_death(death: dict):
     genes = get_genes_for_death_id(death['id'])
     factors = get_factors_for_death_id(death['id'])
+    gene_ids = []
+    factor_ids = []
+    for _g in genes:
+        gene_ids.append(_g.id)
+
+
 
     for g in death['genes']:
-        if len(genes[[i for i, e in enumerate(genes) if e.id == g.id][0]]) == 0:
-            _dg = DeathGenes(id_death=death['id'], id_gene=g.id, activation=g.activation)
+        if len(gene_ids) == 0 or not bool(list(filter(lambda x: x == g['id'], gene_ids))):
+            _dg = DeathGenes(id_death=death['id'], id_gene=g['id'], activation=g['activation'])
             db.session.add(_dg)
             db.session.commit()
 
+    for _f in factors:
+        factor_ids.append(_f.id)
+
     for f in death['factors']:
-        if len(factors[[i for i, e in enumerate(factors) if e.id == f.id][0]]) == 0:
-            _df = DeathFactors(id_death=death['id'], id_factor=f.id, activation=f.activation)
+        if len(factor_ids) == 0 or not bool(list(filter(lambda x: x == f['id'], factor_ids))):
+            _df = DeathFactors(id_death=death['id'], id_factor=f['id'], activation=f['activation'])
             db.session.add(_df)
             db.session.commit()
 
-    return None
+    death_g_id = []
+    for g in death['genes']:
+        death_g_id.append(g['id'])
+
+    for g_id in gene_ids:
+        if len(death_g_id) == 0 or not bool(list(filter(lambda x: x == g_id, death_g_id))):
+            _dg = DeathGenes.query.filter_by(id_gene=g_id, id_death=death['id']).delete()
+            db.session.commit()
+
+    death_f_id = []
+    for f in death['factors']:
+        death_f_id.append(f['id'])
+
+    for f_id in factor_ids:
+        if len(death_f_id) == 0 or not bool(list(filter(lambda x: x == f_id, death_f_id))):
+            _dg = DeathFactors.query.filter_by(id_factor=f_id, id_death=death['id']).delete()
+            db.session.commit()
+
+    genes = get_genes_for_death_id(death['id'])
+    factors = get_factors_for_death_id(death['id'])
+
+    res = {"id": death['id'],
+           "description": death['description'],
+           "death_type": {
+               "id": death['death_type']['id'],
+               "name": death['death_type']['name']
+           },
+           "genes": [{
+               "id": g.id,
+               "name": g.name,
+               "activation": g.activation
+
+           } for g in genes],
+
+           "factors": [
+               {
+                   "id": f.id,
+                   "name": f.name,
+                   "activation": f.activation
+               }
+               for f in factors]
+           }
+
+    return res
 
 
 def delete_death(id: int):

@@ -66,7 +66,7 @@ def get_genes():
     return [
         {
             "id": g.id,
-            "name": g.Name,
+            "name": g.name,
         }
         for g in genes
     ]
@@ -77,7 +77,7 @@ def get_factors():
     return [
         {
             "id": f.id,
-            "name": f.Name,
+            "name": f.name,
         }
         for f in factors
     ]
@@ -130,10 +130,10 @@ def add_factor():
 def update_death():
     data = request.json
     dt = ds.update_death(data)
-    return {
-        "id": dt.id,
-        "name": dt.name
-    }
+
+
+
+    return dt
 
 
 @main.route("/remove_death_type")
