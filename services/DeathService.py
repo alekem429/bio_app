@@ -145,5 +145,34 @@ def update_death(death: dict):
     return res
 
 
-def delete_death(id: int):
+def delete_death_type(id: int):
+    deaths = Deaths.query.filter_by(death_type_id = id)
+    for de in deaths:
+        delete_death(de['id'])
+
+    DeathTypes.query.filter_by(id=id).delete()
+    db.session.commit()
     return None
+
+
+def delete_death(id: int):
+    Deaths.query.filter_by(id=id).delete()
+    DeathGenes.query.filter_by(id_death=id).delete()
+    DeathFactors.query.filter_by(id_death=id).delete()
+    db.session.commit()
+    return None
+
+
+def delete_gene(id: int):
+    Genes.query.filter_by(id=id).delete()
+    DeathGenes.query.filter_by(id_gene=id).delete()
+    db.session.commit()
+    return None
+
+
+def delete_factor(id: int):
+    Factors.query.filter_by(id=id).delete()
+    DeathFactors.query.filter_by(id_factor=id).delete()
+    db.session.commit()
+    return None
+

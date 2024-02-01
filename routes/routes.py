@@ -136,10 +136,27 @@ def update_death():
     return dt
 
 
-@main.route("/remove_death_type")
-def remove_death_type(death_type_id: int):
+@main.route("/remove_death_type", methods=['GET'])
+def remove_death_type():
+    death_type_id = int(request.args.get('id_death_type'))
+    ds.delete_death_type(death_type_id)
     return "hello_word"
 
-@main.route("/remove_death")
-def remove_death(death: dict):
+@main.route("/remove_death", methods=['GET'])
+def remove_death():
+    death_id = int(request.args.get('id_death'))
+    ds.delete_death(death_id)
+    return "hello_word"
+
+
+@main.route("/remove_gene", methods=['GET'])
+def remove_gene(death: dict):
+    gene_id = int(request.args.get('id_gene'))
+    ds.delete_gene(gene_id)
+    return "hello_word"
+
+@main.route("/remove_factors", methods=['GET'])
+def remove_attribute():
+    factor_id = int(request.args.get('id_factor'))
+    ds.delete_factor(factor_id)
     return "hello_word"
