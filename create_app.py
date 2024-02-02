@@ -1,14 +1,19 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 from services.db_context import *
 from routes import routes
 app = Flask(__name__)
+
+CORS(app)
 
 app.config["DEBUG"] = True
 app.config["SECRET_KEY"] = "secret"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # db = SQLAlchemy()
 
