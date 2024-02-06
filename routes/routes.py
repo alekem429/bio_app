@@ -126,18 +126,17 @@ def add_factor():
         }
 
 
-@main.route("/update_death", methods=['Put'])
+@main.route("/update_death", methods=['Post'])
 def update_death():
     data = request.json
     dt = ds.update_death(data)
-
-
 
     return dt
 
 
 @main.route("/remove_death_type", methods=['GET'])
 def remove_death_type():
+    print(request.args)
     death_type_id = int(request.args.get('id_death_type'))
     ds.delete_death_type(death_type_id)
     return "hello_word"
@@ -150,7 +149,7 @@ def remove_death():
 
 
 @main.route("/remove_gene", methods=['GET'])
-def remove_gene(death: dict):
+def remove_gene():
     gene_id = int(request.args.get('id_gene'))
     ds.delete_gene(gene_id)
     return "hello_word"
