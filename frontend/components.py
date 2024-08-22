@@ -31,21 +31,23 @@ def flatten_data(data, colors_genes, colors_factors):
         description = item['description']
         factors = generate_gene_divs(item['factors'], colors_genes)
         genes = generate_gene_divs(item['genes'], colors_factors)
+        remove = generate_remove_column(item['id'])
 
         rows.append(html.Tr([
             html.Td(item['id']),
             html.Td(description),
             html.Td(factors),
-            html.Td(genes)
+            html.Td(genes),
+            html.Td(remove, className="remove-column")
         ], className="mw-100"))
     return rows
 
 
 def generate_gene_divs(items, colors):
-    gene_divs = []
+    item_divs = []
     for i, item in enumerate(items):
         color = colors[item['id']]
-        gene_divs.append(
+        item_divs.append(
             html.Div(
                 [
                     html.Span(item['name'], className="item-name"),
@@ -58,4 +60,8 @@ def generate_gene_divs(items, colors):
                 className="table-item"
             )
         )
-    return html.Div(gene_divs, className="item-container")
+    return html.Div(item_divs, className="item-container")
+
+def generate_remove_column(id):
+    remove = html.Button([html.Span(className="bi-x-lg")], className="button-remove-death", id={'type': 'delete-button', 'index': id},n_clicks=0)
+    return html.Div(remove)
