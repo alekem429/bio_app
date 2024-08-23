@@ -53,8 +53,8 @@ def add_gene(gene: dict):
     return _gene
 
 
-def add_factor(name: str):
-    _factor = Factors(name=name)
+def add_factor(factor: dict):
+    _factor = Factors(name=factor['name'])
     db.session.add(_factor)
     db.session.commit()
     return _factor

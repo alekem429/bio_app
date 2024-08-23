@@ -82,11 +82,6 @@ def get_factors():
         for f in factors
     ]
 
-
-
-
-
-
 @main.route("/add_death_type", methods=['Post'])
 def add_death_type():
     data = request.json
@@ -119,6 +114,7 @@ def add_gene():
 @main.route("/add_factor", methods=['Post'])
 def add_factor():
     data = request.json
+    print(data)
     dt = ds.add_factor(data)
     return {
             "id": dt.id,
@@ -130,7 +126,6 @@ def add_factor():
 def update_death():
     data = request.json
     dt = ds.update_death(data)
-
     return dt
 
 
@@ -141,10 +136,11 @@ def remove_death_type():
     ds.delete_death_type(death_type_id)
     return "hello_word"
 
+
 @main.route("/remove_death", methods=['GET'])
 def remove_death():
-    death_id = int(request.args.get('id_death'))
-    ds.delete_death(death_id)
+    death_id = request.args.get('id_death')
+    ds.delete_death(int(death_id))
     return "hello_word"
 
 
@@ -158,4 +154,32 @@ def remove_gene():
 def remove_attribute():
     factor_id = int(request.args.get('id_factor'))
     ds.delete_factor(factor_id)
+    return "hello_word"
+
+
+
+@main.route("/remove_multiple_deaths", methods=['GET'])
+def remove_multiple_deaths():
+    query = request.args.getlist('id_death')
+    for q in query:
+        ds.delete_death(int(q))
+
+    return "hello_word"
+
+
+@main.route("/remove_multiple_genes", methods=['GET'])
+def remove_multiple_genes():
+    query = request.args.getlist('id_gene')
+    for q in query:
+        ds.delete_gene(int(q))
+
+    return "hello_word"
+
+
+@main.route("/remove_multiple_factors", methods=['GET'])
+def remove_multiple_factors():
+    query = request.args.getlist('id_factor')
+    for q in query:
+        ds.delete_factor(int(q))
+
     return "hello_word"
