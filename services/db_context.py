@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 class DeathTypes(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     Name = db.Column(db.String(50), unique=True)
-
+    description = db.Column(db.String(1000))
     deaths = db.relationship('Deaths', backref='death_types')
 
     def __repr__(self):

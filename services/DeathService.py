@@ -39,8 +39,8 @@ def get_factors_for_death_id(death_id):
     return factors
 
 
-def add_death_type(name: str):
-    _death_type = DeathTypes(Name=name)
+def add_death_type(death_type: dict):
+    _death_type = DeathTypes(Name = death_type['name'], description = death_type['description'])
     db.session.add(_death_type)
     db.session.commit()
     return _death_type
@@ -72,13 +72,14 @@ def add_death(death: dict):
     db.session.add(_death)
     db.session.commit()
 
-    for g in death['genes']:
-        dg = DeathGenes(id_death = _death.id, id_gene=g['id'], activation=g['activation'])
-        db.session.add(dg)
-
-    for f in death['factors']:
-        df = DeathFactors(id_death = _death.id, id_factor=f['id'], activation=f['activation'])
-        db.session.add(df)
+    if 'genes' in death.keys():
+        for g in death['genes']:
+            dg = DeathGenes(id_death = _death.id, id_gene=g['id'], activation=g['activation'])
+            db.session.add(dg)
+    if 'factors' in death.keys():
+        for f in death['factors']:
+            df = DeathFactors(id_death = _death.id, id_factor=f['id'], activation=f['activation'])
+            db.session.add(df)
 
     db.session.commit()
 

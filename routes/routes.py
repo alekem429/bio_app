@@ -18,6 +18,7 @@ def get_death_types():
         {
             "id": r.id,
             "name": r.Name,
+            "description": r.description
         }
         for r in res
     ]
@@ -85,10 +86,11 @@ def get_factors():
 @main.route("/add_death_type", methods=['Post'])
 def add_death_type():
     data = request.json
-    dt = ds.add_death_type(data.get('name'))
+    dt = ds.add_death_type(data)
     return {
             "id": dt.id,
             "name": dt.Name,
+            "description": dt.description
         }
 
 
