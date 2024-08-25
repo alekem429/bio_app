@@ -1,6 +1,6 @@
 from extensions import db
 from flask_sqlalchemy import SQLAlchemy
-
+import json
 # db = SQLAlchemy()
 class DeathTypes(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -23,7 +23,10 @@ class Deaths(db.Model):
     death_factors = db.relationship('DeathFactors', backref='death')
 
     def __repr__(self):
-        return f'<Death: {self.description}'
+        return json.dumps({
+            'id': self.id,
+            'Description': self.description,
+        })
 
 
 class Genes(db.Model):

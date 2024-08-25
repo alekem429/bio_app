@@ -1,3 +1,5 @@
+import json
+
 from .db_context import db, Genes, Deaths, DeathGenes, Factors, DeathFactors, DeathTypes
 
 
@@ -169,9 +171,10 @@ def update_death(death: dict):
 
 
 def delete_death_type(id: int):
-    deaths = Deaths.query.filter_by(death_type_id = id)
+    deaths = Deaths.query.filter_by(death_type_id = id).all()
+
     for de in deaths:
-        delete_death(de['id'])
+        delete_death(de.id)
 
     DeathTypes.query.filter_by(id=id).delete()
     db.session.commit()

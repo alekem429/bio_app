@@ -116,7 +116,6 @@ def add_gene():
 @main.route("/add_factor", methods=['Post'])
 def add_factor():
     data = request.json
-    print(data)
     dt = ds.add_factor(data)
     return {
             "id": dt.id,
@@ -183,5 +182,14 @@ def remove_multiple_factors():
     query = request.args.getlist('id_factor')
     for q in query:
         ds.delete_factor(int(q))
+
+    return "hello_word"
+
+@main.route("/remove_multiple_death_types", methods=['GET'])
+def remove_multiple_death_types():
+    query = request.args.getlist('id_death_type')
+
+    for q in query:
+        ds.delete_death_type(int(q))
 
     return "hello_word"
