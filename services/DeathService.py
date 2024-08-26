@@ -7,6 +7,9 @@ def get_death_types():
     death_types = DeathTypes.query.all()
     return death_types
 
+def get_deaths():
+    deaths = Deaths.query.all()
+    return deaths
 
 def get_genes():
     genes = Genes.query.all()
@@ -33,10 +36,14 @@ def get_factors_for_death_id(death_id):
     death_factors = DeathFactors.query.filter_by(id_death=death_id).all()
 
     factors = []
+    if death_factors == None:
+        return factors
+
     for df in death_factors:
-        f = df.factor
-        f.activation = df.activation
-        factors.append(f)
+        if df.factor is not None and df.activation is not None:
+            f = df.factor
+            f.activation = df.activation
+            factors.append(f)
 
     return factors
 
@@ -95,8 +102,6 @@ def update_death(death: dict):
     factor_ids = []
     for _g in genes:
         gene_ids.append(_g.id)
-
-
 
     for g in death['genes']:
         if len(gene_ids) == 0 or not bool(list(filter(lambda x: x == g['id'], gene_ids))):
