@@ -26,34 +26,11 @@ def get_death_types():
 @main.route("/get_list_of_deaths", methods=['GET'])
 def get_deaths():
     deaths: List[ds.Deaths] = ds.get_deaths()
-    dt = ds.get_death_types()
     res = []
 
     for d in deaths:
-        genes = ds.get_genes_for_death_id(d.id)
-        factors = ds.get_factors_for_death_id(d.id)
-
         buf = {"id": d.id,
-               "description": d.description,
-               "death_type": {
-                   "id": d.death_type_id,
-                   "name": dt[[i for i, e in enumerate(dt) if e.id == d.death_type_id][0]].Name
-               },
-               "genes": [{
-                   "id": g.id,
-                   "name": g.name,
-                   "activation": g.activation
-
-               }for g in genes],
-
-               "factors": [
-                   {
-                       "id": f.id,
-                       "name": f.name,
-                       "activation": f.activation
-                   }
-                   for f in factors]
-               }
+               "description": d.description}
         res.append(buf)
 
     return res

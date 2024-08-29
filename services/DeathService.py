@@ -96,6 +96,11 @@ def add_death(death: dict):
 
 
 def update_death(death: dict):
+    _death = Deaths.query.get(death['id'])
+    _death.description = death['description']
+    _death.death_type_id = death['death_type_id']
+    db.session.commit()
+
     genes = get_genes_for_death_id(death['id'])
     factors = get_factors_for_death_id(death['id'])
     gene_ids = []
@@ -113,6 +118,7 @@ def update_death(death: dict):
         dg.activation = g['activation']
         db.session.commit()
 
+    Deaths
 
     for _f in factors:
         factor_ids.append(_f.id)
@@ -171,7 +177,6 @@ def update_death(death: dict):
                }
                for f in factors]
            }
-
     return res
 
 
