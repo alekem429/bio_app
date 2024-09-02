@@ -200,8 +200,6 @@ def remove_multiple_factors():
 @main.route("/remove_multiple_death_types", methods=['GET'])
 def remove_multiple_death_types():
     query = request.args.getlist('id_death_type')
-
     for q in query:
         ds.delete_death_type(int(q))
-
     return "hello_word"

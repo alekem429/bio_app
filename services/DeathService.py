@@ -1,5 +1,7 @@
 import json
 
+from flask import jsonify
+
 from .db_context import db, Genes, Deaths, DeathGenes, Factors, DeathFactors, DeathTypes
 
 
@@ -94,6 +96,33 @@ def add_death(death: dict):
 
     return _death
 
+def get_death_by_id(death_id):
+    _death = Deaths.query.get(death_id)
+    if not _death:
+        return []
+
+    genes = get_genes_for_death_id(death_id)
+    factors = get_factors_for_death_id(death_id)
+
+    res = {
+        "id": _death.id,
+        "description": _death.description,
+        "death_type": {
+            "id": _death.death_type_id
+        },
+        "genes": [{
+            "id": g.id,
+            "name": g.name,
+            "activation": g.activation
+        } for g in genes],
+        "factors": [{
+            "id": f.id,
+            "name": f.name,
+            "activation": f.activation
+        } for f in factors]
+    }
+
+    return res
 
 def update_death(death: dict):
     _death = Deaths.query.get(death['id'])
@@ -117,8 +146,6 @@ def update_death(death: dict):
         dg = DeathGenes.query.filter_by(id_death=death['id'], id_gene=g['id']).first()
         dg.activation = g['activation']
         db.session.commit()
-
-    Deaths
 
     for _f in factors:
         factor_ids.append(_f.id)
